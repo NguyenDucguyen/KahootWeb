@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Trash2, Play, Copy, CheckCircle } from 'lucide-react';
+import { Plus, Trash2, Play, Copy, CheckCircle, LogOut, FileUp, PenSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
@@ -15,10 +15,27 @@ export default function AdminDashboard() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedPin, setCopiedPin] = useState<string | null>(null);
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     loadQuizzes();
+    loadUserInfo();
   }, []);
+
+  const loadUserInfo = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: teacher } = await supabase
+        .from('teachers')
+        .select('full_name')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (teacher) {
+        setUserName(teacher.full_name);
+      }
+    }
+  };
 
   const loadQuizzes = async () => {
     setLoading(true);
@@ -31,6 +48,11 @@ export default function AdminDashboard() {
       setQuizzes(data);
     }
     setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
   };
 
   const handleDeleteQuiz = async (quizId: string) => {
@@ -68,19 +90,36 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-3xl shadow-2xl p-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                 Quản lý Quiz
               </h1>
-              <p className="text-gray-600">Tạo và quản lý các quiz của bạn</p>
+              <p className="text-gray-600">Chào mừng, {userName || 'Giáo viên'}</p>
             </div>
             <button
-              onClick={() => navigate('/admin/upload')}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all flex items-center gap-2 shadow-lg"
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors"
             >
-              <Plus className="w-5 h-5" />
+              <LogOut className="w-5 h-5" />
+              Đăng xuất
+            </button>
+          </div>
+
+          <div className="flex gap-4 mb-8">
+            <button
+              onClick={() => navigate('/admin/quiz/new')}
+              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+            >
+              <PenSquare className="w-5 h-5" />
               Tạo Quiz Mới
+            </button>
+            <button
+              onClick={() => navigate('/admin/upload')}
+              className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+            >
+              <FileUp className="w-5 h-5" />
+              Tải file .bob
             </button>
           </div>
 
@@ -91,13 +130,7 @@ export default function AdminDashboard() {
           ) : quizzes.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-600 mb-4">Chưa có quiz nào</p>
-              <button
-                onClick={() => navigate('/admin/upload')}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all inline-flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Tạo Quiz Đầu Tiên
-              </button>
+              <p className="text-sm text-gray-500">Tạo quiz mới hoặc tải file .bob để bắt đầu</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

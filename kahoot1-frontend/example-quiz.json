@@ -1,0 +1,30 @@
+{
+  "title": "Quiz Mẫu từ JSON",
+  "backgroundImage": "",
+  "audioFile": "",
+  "questions": [
+    {
+      "type": "multiple_choice",
+      "question_text": "Ngôn ngữ lập trình nào được sử dụng để phát triển web?",
+      "options": ["JavaScript", "Python", "C++", "Java"],
+      "correct_answer": "JavaScript",
+      "timer": 30,
+      "points": 100
+    },
+    {
+      "type": "text_input",
+      "question_text": "Viết tên thủ đô của Pháp",
+      "correct_answer": "Paris",
+      "timer": 20,
+      "points": 100
+    },
+    {
+      "type": "multiple_choice",
+      "question_text": "Framework React được phát triển bởi công ty nào?",
+      "options": ["Facebook", "Google", "Microsoft", "Apple"],
+      "correct_answer": "Facebook",
+      "timer": 25,
+      "points": 100
+    }
+  ]
+}

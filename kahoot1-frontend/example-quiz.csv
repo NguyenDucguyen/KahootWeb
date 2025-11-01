@@ -1,0 +1,4 @@
+question,type,correct_answer,option1,option2,option3,option4,timer,points
+Thủ đô của Việt Nam là gì?,multiple_choice,Hà Nội,Hà Nội,Hồ Chí Minh,Đà Nẵng,Huế,30,100
+2 + 2 bằng bao nhiêu?,text_input,4,,,,20,100
+Ai là tổng thống Mỹ đầu tiên?,multiple_choice,George Washington,George Washington,Abraham Lincoln,John F. Kennedy,Barack Obama,25,100
